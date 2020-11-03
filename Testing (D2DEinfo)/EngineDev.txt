@@ -1,0 +1,50 @@
+#Progress structure etc Just a log of things i need to pay attention 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Legend:
+- < To Do
++ < Implemented (To Polish) 
+V < Done 
+
+
+ -----==================== [TODO] ====================-----
+ 
+[+] < Seperate __widgets__ into seperate file 
+
+
+
+[-] < Add text attribute to button. 
+[-] < Text Anchor attribute. 
+[-] < Text Size attribute. 
+
+
+[-] < Think about more _std widgets events :v 
+
+
+
+[-] < Improve/Think more about event system (Focus, Event sets, Overlap) 
+
+
