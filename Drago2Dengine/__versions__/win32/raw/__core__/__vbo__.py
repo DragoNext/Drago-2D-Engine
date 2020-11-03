@@ -273,6 +273,10 @@ class DragoObject:
                 GL.glTexSubImage2D(GL.GL_TEXTURE_2D, 0, il[6][0], il[6][1], il[3], il[4], GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, il[5]) 
             elif il[0] == 'del': # Temporary way to delete (change latter)
                 self.edit_pos(il[1],[0,0],[0,0])
+            elif il[0] == 'dmd': #Set draw mode 
+                self.DRAWMODELOC = glGetUniformLocation(self.basicshader, 'DRAW_MODE')
+                glUniform1iv(self.DRAWMODELOC, 1 , il[1])
+                
             else:
                 glBufferSubData(GL_ARRAY_BUFFER,il[0]*4,4,ctypes.c_float(il[1]))
 
@@ -582,15 +586,10 @@ void main() {
 		if(in_TXTID != 0) {
 			for(int i = 0; i <= 160; i++){
 				if(in_TXTID == i){out_color = texture(TXTARRAY[int(in_TXTID)], in_TXTC);break;}}
-
-			
-			
-			
 				out_color.r+= v_Color[0];
 				out_color.g+= v_Color[1];
 				out_color.b+= v_Color[2];
 				out_color.a+= v_Color[3];
-				
 			}
 		else {
 			out_color = v_Color;
@@ -634,8 +633,7 @@ void main() {
         glUseProgram(0)
 
     def set_mode(self,mode):
-        self.DRAWMODELOC = glGetUniformLocation(self.basicshader, 'DRAW_MODE')
-        glUniform1iv(self.DRAWMODELOC, 1 , mode)
+        self.update_list.extend([['dmd',mode]])
 
 
     def draw(self):
