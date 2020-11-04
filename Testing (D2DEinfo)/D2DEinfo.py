@@ -198,27 +198,24 @@ def __main__():
         
             GL.glDisable(GL.GL_DEPTH_TEST)
 
-            
+            self.manager_events.add_event(EventType='KeyPress',EventOn=self.KeyPressEvent)
 
             # 119/70
         #InitglEnd
-
-        
-        def freecalc(self):
-            #Dosent affect main perfomance :)
-            d = input()
-            self.buff.bind_buffer()
-            if d == '0':
+        def KeyPressEvent(self,ev):
+            if ev.char == 'q':
                 try:
                     self.buff.set_mode(0)
                 except Exception as e:
                     print(e)
-            if d == '1':
+            if ev.char =='w':
                 try:
                     self.buff.set_mode(1)
                 except Exception as e:
                     print(e)
-
+        
+        def freecalc(self):
+            #Dosent affect main perfomance :)
             self.free_calc_update()
             
         #FreecalcEnd
@@ -328,5 +325,6 @@ def __main__():
 
 if __name__ == "__main__":
     print(os.getcwd()) 
-    cProfile.run("__main__()",sort = 'calls')
-    input()
+    __main__()
+    input('Press Enter to end')
+
