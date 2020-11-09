@@ -424,7 +424,7 @@ class DragoObject:
 
     def edit_texture(self,object=None,txtid=0):
         
-        if txtid not in self.textures:
+        if txtid not in self.textures and txtid != -1:
             glBindBuffer(GL_ARRAY_BUFFER, self.vbo )
             glBindTextureUnit(txtid, txtid)
         nd = (0+((self.object_indexes[object]*4)*10))
@@ -442,7 +442,7 @@ class DragoObject:
         self.vertices[nd+37] = txtid 
 
         self.update_list.extend(ou)
-        if txtid not in self.textures:
+        if txtid not in self.textures and txtid != -1:
             self.textures.append(txtid)
             glBindBuffer(GL_ARRAY_BUFFER, 0)
 
