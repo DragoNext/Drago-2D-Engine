@@ -42,6 +42,27 @@ class D2DEvents:
         self.master.bind('<KeyPress>',self.checkkeypress)
     def clear_events(self):
         self.hover_events    = [];self.rclick_events   = [];self.lclick_events   = [];self.mclick_events   = [];self.keypress_events = []
+        
+    def edit_event(self,eventid,what):
+        pass 
+        
+    def delete_event(self,event_id):
+        # Deterimne event type ? (Event id [
+        event_type = event_id[0]
+        event_id = event_id[1:]
+        
+        if event_type == 'H':
+            del self.hover_events[event_id] 
+        elif event_type == 'R':
+            del self.rclick_events[event_id] 
+        elif event_type == 'L':
+            del self.lclick_events[event_id] 
+        elif event_type == 'M':
+            del self.mclick_events[event_id]       
+        elif event_type == 'K':
+            del self.keypress_events[event_id] 
+        
+        
 
     def checkkeypress(self,ev):
         for i in self.keypress_events:
@@ -174,7 +195,7 @@ class D2DEvents:
             event.append(False)
             event.append(EventDelay)
             self.hover_events.append(event)
-            return True 
+            return 'H'+str(len(self.hover_events)-1 )
         if dat == 'Button-1' or dat == 'MouseLC' or dat == 'LeftClick':
             event = [0]
             event.append(Cords)
@@ -183,7 +204,7 @@ class D2DEvents:
             event.append(False)
             event.append(EventDelay)
             self.rclick_events.append(event)
-            return True 
+            return 'R'+str(len(self.rclick_events)-1  )
         if dat == 'Button-2' or dat == 'MouseRC' or dat == 'RightClick':
             event = [0]
             event.append(Cords)
@@ -192,7 +213,7 @@ class D2DEvents:
             event.append(False)
             event.append(EventDelay)
             self.lclick_events.append(event)
-            return True 
+            return 'L'+str(len(self.lclick_events)-1)
         if dat == 'Button-3' or dat == 'MouseMC' or dat == 'MiddleClick':
             event = [0]
             event.append(Cords)
@@ -201,12 +222,12 @@ class D2DEvents:
             event.append(False)
             event.append(EventDelay)
             self.mclick_events.append(event)
-            return True 
+            return 'M'+str(len(self.mclick_events)-1)
         if dat == 'KeyPress':
             event = []
             event.append(EventOn)
             self.keypress_events.append(event)
-            return True 
+            return 'K'+str(len(self.keypress_events)-1 )  
             
             
     def check(self,ev,lfg,lfm,lfe):
