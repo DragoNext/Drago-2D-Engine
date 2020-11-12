@@ -29,6 +29,11 @@ class D2DEvents:
                4:'KeyPress',0:'OnKey'}
         self.master = cvroot 
         
+        self.mouse_x = 0
+        self.mouse_y = 0
+        self._id = 0 
+        self.mouse_on = False 
+        
         self.hover_events    = []
         self.rclick_events   = []
         self.lclick_events   = []
@@ -49,7 +54,7 @@ class D2DEvents:
     def delete_event(self,event_id):
         # Deterimne event type ? (Event id [
         event_type = event_id[0]
-        event_id = event_id[1:]
+        event_id = int(event_id[1:])
         
         if event_type == 'H':
             del self.hover_events[event_id] 
@@ -61,6 +66,19 @@ class D2DEvents:
             del self.mclick_events[event_id]       
         elif event_type == 'K':
             del self.keypress_events[event_id] 
+    def get_event(self,event_id):
+         event_type = event_id[0]
+        event_id = int(event_id[1:])
+        if event_type == 'H':
+            return self.hover_events[event_id] 
+        elif event_type == 'R':
+            return self.rclick_events[event_id] 
+        elif event_type == 'L':
+            return self.lclick_events[event_id] 
+        elif event_type == 'M':
+            return self.mclick_events[event_id]       
+        elif event_type == 'K':
+            return self.keypress_events[event_id] 
         
         
 
@@ -123,6 +141,7 @@ class D2DEvents:
     def checkrclick(self,ev):
         c=0
         t = False 
+        self.mouse_on = True 
         for event in self.rclick_events:
             x = ev.x 
             y = ev.y 
@@ -131,6 +150,7 @@ class D2DEvents:
             previoev = event[3]
             state = event[4]
             delay = event[5]
+            events_completed = 0
             if x >= cords[0]:
                 if y >= cords[1]:
                     if x <= cords[2]:
@@ -138,6 +158,7 @@ class D2DEvents:
                             if state != True:
                                 if type(launchev) != tuple:
                                     launchev()
+                                    events_completed+=1
                                 else:launchev[0](launchev[1:]) 
                             self.rclick_events[c][4] = True 
 
@@ -147,10 +168,13 @@ class D2DEvents:
             else:self.master.after(delay,previoev[0],previoev[1:])    
             c+=1 
             
+      
+        self.mouse_on = False  
      
     def checkmotion(self,ev):
         c=0
-        
+        self.mouse_x = ev.x
+        self.mouse_y = ev.y
         for event in self.hover_events:
             t = False 
             x = ev.x 
@@ -228,6 +252,7 @@ class D2DEvents:
             event.append(EventOn)
             self.keypress_events.append(event)
             return 'K'+str(len(self.keypress_events)-1 )  
+        
             
             
     def check(self,ev,lfg,lfm,lfe):

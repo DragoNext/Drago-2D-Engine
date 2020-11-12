@@ -110,9 +110,14 @@ class DragoObject:
         return self.serialization 
 
     def create_quad(self,BOX_START=[0,0],BOX_SIZE=[0,0],COLOR=[1,0,0,1],TEXTUREID=0):
+        self.animation_buffer.append([])
         if TEXTUREID not in self.textures:
             glBindTextureUnit(TEXTUREID, TEXTUREID)
-
+        is_float = False 
+        if type(BOX_START[0]) is int:
+            pass
+        else:
+            is_float = True
         cords = [
 
         [BOX_START[0],
@@ -130,7 +135,10 @@ class DragoObject:
         TXC = [[0.0,0.0],[1.0,0.0],[1.0,1.0],[0.0,1.0]]
         c=0
         for i in cords:
-            (xr,yr) = _cords_to_ratio(i[0],i[1],self.sx,self.sy)
+            if is_float is False:
+                (xr,yr) = _cords_to_ratio(i[0],i[1],self.sx,self.sy)
+            else:
+                xr,yr = i 
             self.vertices.append(xr) # 1
             self.vertices.append(yr) # 2 
             self.vertices.append(0) # 3 
@@ -160,6 +168,7 @@ class DragoObject:
         self.textures.append(txtid)
 
     def create_letter(self,cords,font,letter,color,texid):
+        self.animation_buffer.append([])
         if texid not in self.textures:
             glBindTextureUnit(texid, texid)
 
@@ -215,8 +224,12 @@ class DragoObject:
             self.textures.append(texid)
         return self.object_count-1
 
-    def draw_text(self):
-        pass
+    def draw_text(self,cords,spacing,font,text,color,texid):
+        x=0
+        for letter in text:
+            self.create_letter(self,cords,font,letter,color,texid)
+            x+=spacing 
+            
 
     def move_up(self,object):
         ''' Move Object To front - Finally working ;-;'''
@@ -536,6 +549,8 @@ class DragoObject:
         self.oj = 0
         self.vert_lists = []
         self.object_counts = []
+        
+        self.animation_buffer = []
 
         self.update_list = []
 
@@ -547,10 +562,10 @@ class DragoObject:
 
 
         vxshader = '''
-#version 330 core 
+#version 460 
 
-layout(location = 0) in vec4 position;
-layout(location = 1) in vec4 color;
+layout(location = 0) in vec4 pos;
+layout(location = 1) in vec4 col;
 layout(location = 2) in float TXTID;
 layout(location = 3) in vec2 TXTC; 
 
@@ -560,19 +575,28 @@ out vec2 in_TXTC;
 
 uniform int DRAW_MODE; 
 
-void main() {
-	in_TXTC = TXTC;
-	in_TXTID = int(TXTID);
-	v_Color = color;
-	gl_Position = gl_ModelViewProjectionMatrix*position  ;
 
-	
+
+void main() {
+    int Extra = int(pos[2]); 
+
+    in_TXTC = TXTC;
+   
+    in_TXTID = int(TXTID);
+    
+    v_Color = col;
+    if(Extra == 0){
+    gl_Position = pos;	
+    }
+    else {
+        gl_Position = vec4(0,0,0,0);
+        }
 }
         
         '''
 
         fgshader = '''
-#version 330 core
+#version 460
 layout(location = 0) out vec4 out_color;
 in vec4 v_Color;
 in flat int in_TXTID; 
@@ -631,7 +655,10 @@ void main() {
         glUniform1iv(self.TXTARRAY, len(self.texture_slots) ,self.texture_slots)
         glUniform1iv(self.DRAWMODELOC, 1 , 0)
         glUseProgram(0)
-
+    def set_animation(self,object,animation):
+        pass
+        
+        
     def set_mode(self,mode):
         self.update_list.extend([['dmd',mode]])
 
